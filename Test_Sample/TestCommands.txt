@@ -1,0 +1,2 @@
+1)"/home/Zubin/Documents/fullthrottle_test/fullthrottle_test_site/venv/bin/python3.7" project_init.py
+
