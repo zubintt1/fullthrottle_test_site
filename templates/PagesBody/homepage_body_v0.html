@@ -1,0 +1,24 @@
+<body>
+<div>
+    <h4>Please select a mode of data input</h4>
+</div>
+<div>
+    <input type="radio" id="custom_input_mode" name="input_mode" value="0" onclick="javascript:select_input_mode(this);">Custom Input For Search</input>
+    <br />
+    <input type="radio" id="file_input_mode" name="input_mode" value="1" onclick="javascript:select_input_mode(this);">File Input For Search</input>
+    <br />
+</div>
+<br />
+<form action="/" method="post" id="home_form">
+    <input id="hdn_input_mode" type="hidden" value="">
+    <div id="input_search" style="display: none;">
+        <textarea id="text_input" name="text_input" type="text" style="display: none;" rows="20" cols="100" placeholder="Please give space separated Values"></textarea>
+        <br />
+        <input  id="file_input" name="file_input" type="file" style="display: none;"/>
+    </div>
+    <br />
+    <div>
+        <button type="button" id="input_submit" style="display: none;" onclick="javascript:submit_input();">Submit Selection</button>
+    </div>
+</form>
+</body>
