@@ -1,4 +1,4 @@
-#!/home/Zubin/Documents/fullthrottle_test/fullthrottle_test_site/venv/bin/python
+#!/home/Zubin/Documents/fullthrottle_test/fullthrottle_test_site/venv/bin/python3.7
 
 # -*- coding: utf-8 -*-
 import re
