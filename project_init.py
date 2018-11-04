@@ -100,8 +100,12 @@ def HomePage():
                     if file and allowed_file(file.filename):
                         filename = secure_filename(file.filename)
                         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                        # df = pd.DataFrame()
-                        df = pd.read_csv(file,header=None,delimiter=",",delim_whitespace=False,index_col=None)
+                        temp_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                        df = pd.read_csv(temp_file_path,header=None,delimiter=",",delim_whitespace=False,index_col=None)
+                        if os.path.exists(temp_file_path):
+                            os.remove(temp_file_path)
+                        else:
+                            print("The file does not exist")
         except:
             print(sys.exc_info())
 
