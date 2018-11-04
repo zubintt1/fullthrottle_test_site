@@ -26,25 +26,39 @@ function submit_input()
 function find_search_result(x)
 {
     var input_value = x.value;
-    if(input_value != undefined && input_value != "" && input_value != null)
+    try
     {
-    //    Ajax Function to call for api search and result return
-        $.ajax({
-            async:false,
-            type: "POST",
-            url: "/search",
-            data: {"word": input_value},
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                alert(response);
-            }
-        });
 
+        if(input_value != undefined && input_value != "" && input_value != null) {
+
+            //    Ajax Function to call for api search and result return
+            $.ajax({
+                async: false,
+                type: "POST",
+                url: "/search",
+                data: {"word": input_value},
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    // console.log("response from api =" + response);
+                    var word_list = JSON.parse(response)
+
+                    $("#search_box").autocomplete({
+                        source: word_list
+                    });
+                }
+            });
+
+        }
+        else
+        {
+            // console.log("No value in search box: Search Value =" + input_value);
+        }
     }
-    else
+    catch(error)
     {
-        console.log("No value in search box: Search Value ="+input_value);
+        // console.log("error was="+error);
+
     }
 
 }
