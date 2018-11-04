@@ -8,8 +8,10 @@ from flask import Flask, session, redirect,flash, url_for, escape, request,rende
 import os
 from werkzeug.utils import secure_filename
 
+#For file implementation
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = set(['csv'])
+
 # Create the application.
 app = Flask(__name__,template_folder='templates')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -22,11 +24,11 @@ class Fullthrottle_Test(object):
         self.searched_word = ""
         self.training_data = pd.DataFrame(columns=['word', 'frequency'])
 
-
+    # pandas function to check length of each column
     def count_length(self,word):
         return len(word)
 
-
+    # function for determining if the seached_word is close to start of the string
     def search_pattern(self,word):
         start_index = 0
         flag = False
@@ -40,6 +42,7 @@ class Fullthrottle_Test(object):
         return -1
 
 
+    # exploiting pandas implementation of large dataframe to automatically sort the search results
     def search_logic(self):
         dictionary = self.training_data
         df = dictionary.copy()
