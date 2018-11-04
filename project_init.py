@@ -9,8 +9,6 @@ from flask import Flask, session, redirect, url_for, escape, request,render_temp
 
 # Create the application.
 app = Flask(__name__,template_folder='templates')
-list_size_limit = 25
-searched_word = ""
 
 
 @app.route('/search_page',methods=['GET'])
@@ -18,7 +16,6 @@ def search_page():
     # Render Output Start
     return render_template("/HomePages/search_page.html")
     # Render Output End
-
 
 @app.route('/',methods=['POST', 'GET'])
 def HomePage():
@@ -37,6 +34,7 @@ def HomePage():
                         pass
         except:
             print(sys.exc_info())
+
         # Process Block End
         # Render Output Start
         return search_page()
@@ -46,8 +44,9 @@ def HomePage():
         return page_not_found(request)
         # Render Output End
 
+
 @app.route('/JavaScript/<file_name>')
-def javascript_render(file_name):
+def javascript_render(self,file_name):
     # Render Output Start
     return send_from_directory("JavaScript",file_name)
     # Render Output End
@@ -68,60 +67,63 @@ def search_words(word):
     except:
         print(sys.exc_info())
 
-    if word is not None:
-        searched_word = word
+    ft_obj = Fullthrottle_Test()
 
-    words_arr = search_logic()
+    if word is not None and word != '':
+        ft_obj.searched_word = word
+
+    words_arr = ft_obj.search_logic()
     word_list = []
     for i in range(len(words_arr)):
         word_list.append(words_arr[i][0])
 
     return jsonify(json.dumps(word_list))
-    # # Render Output Start
-    # words_arr = ["track","australia","discussion","archive"]
-    # words_arr.insert(-1,"once")
-    # return jsonify(json.dumps(words_arr))
-    # # Render Output End
 
 @app.errorhandler(404)
-def page_not_found(error):
+def page_not_found(self,error):
     return 'This page does not exist', 404
 
+class Fullthrottle_Test(object):
 
-def count_length(word):
-    return len(word)
-
-
-def search_pattern(word):
-    start_index = 0
-    flag = False
-    for i in range(len(word) - len(searched_word) + 1):
-        start_index = i
-        j = len(searched_word)
-        if word[i: i + j] == searched_word[0:]:
-            if start_index > 0:
-                return 1
-            return start_index
-    return -1
+    def __init__(self):
+        self.list_size_limit = 25
+        self.searched_word = ""
 
 
-def search_logic():
-    dictionary = pd.read_csv("/home/Zubin/Documents/fullthrottle_test/fullthrottle_test_site/Test_Sample/full_data.csv")
-    df = dictionary.copy()
-    df.columns = ['word', 'frequency']
-    df["length"] = df.word.apply(count_length)
-    df["word_index"] = df.word.apply(search_pattern)
-    matched_words = df[df.word_index >= 0]
-    # since order of priority of constraints is not given, we assume that constraints are given in
-    # decreasing order of priority
-    result = matched_words.sort_values(['word_index', 'frequency', 'length'], ascending=[1, 0, 1])
-    if len(result) > list_size_limit:
-        for i in range(list_size_limit - 1, len(result) - 1, 1):
-            result.drop(result.index[list_size_limit], inplace=True)
-    del result["frequency"]
-    del result["length"]
-    del result["word_index"]
-    return np.array(result)
+    def count_length(self,word):
+        return len(word)
+
+
+    def search_pattern(self,word):
+        start_index = 0
+        flag = False
+        for i in range(len(word) - len(self.searched_word) + 1):
+            start_index = i
+            j = len(self.searched_word)
+            if word[i: i + j] == self.searched_word[0:]:
+                if start_index > 0:
+                    return 1
+                return start_index
+        return -1
+
+
+    def search_logic(self):
+        dictionary = pd.read_csv("/home/Zubin/Documents/fullthrottle_test/fullthrottle_test_site/Test_Sample/full_data.csv")
+        df = dictionary.copy()
+        df.columns = ['word', 'frequency']
+        df["length"] = df.word.apply(self.count_length)
+        df["word_index"] = df.word.apply(self.search_pattern)
+        matched_words = df[df.word_index >= 0]
+        # since order of priority of constraints is not given, we assume that constraints are given in
+        # decreasing order of priority
+        result = matched_words.sort_values(['word_index', 'frequency', 'length'], ascending=[1, 0, 1])
+        if len(result) > self.list_size_limit:
+            for i in range(self.list_size_limit - 1, len(result) - 1, 1):
+                result.drop(result.index[self.list_size_limit], inplace=True)
+        del result["frequency"]
+        del result["length"]
+        del result["word_index"]
+        return np.array(result)
 
 if __name__ == '__main__':
     app.debug = True
